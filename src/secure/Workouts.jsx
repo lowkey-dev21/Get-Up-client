@@ -7,61 +7,80 @@ import { useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput.jsx";
 import Loading from "../components/Loading.jsx";
 import { Toaster, toast } from "sonner";
-import useSWR from 'swr'
+import useSWR, { mutate } from "swr";
 
+const fetchWorkouts = async () => {
+  try {
+    const token = Cookie.get("token");
+    if (!token) {
+      throw new Error("No token found");
+    }
+    const res = await axios.get("/api/workouts", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data.workouts;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Failed to fetch workouts. Please try again later.");
+    }
+    throw error;
+  }
+};
 
 const Workouts = () => {
-  const [workouts, setWorkouts] = useState([]); // Initialize as null initially
   const navigate = useNavigate();
   const [space, setSpace] = useState(false);
-  const [loading, setLoading] = useState(true);
-
- 
-
-
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const token = Cookie.get("token");
-        if (!token) {
-          navigate("/login");
-          return; // Return early if token is missing
-        }
-        const res = await axios.get("/api/workouts", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log(res.data);
-        setWorkouts(res.data.workouts);
-        setLoading(false);
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.message
-        ) {
-          toast.error(error.response.data.message);
-        } else {
-          toast.error("Failed to fetch workouts. Please try again later.");
-        }
-        navigate("/login");
-      }
-    };
-
-    fetchWorkouts();
+    const token = Cookie.get("token");
+    if (!token) {
+      navigate("/login");
+    }
   }, [navigate]);
 
-  if (loading) {
+  const { data: workouts, error, isLoading } = useSWR("/api/workouts", fetchWorkouts);
+
+  const handleAddWorkout = async (newWorkout) => {
+    try {
+      const token = Cookie.get("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      await axios.post("/api/workouts", newWorkout, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // Invalidate and refetch
+      mutate("/api/workouts");
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to add workout. Please try again later.");
+      }
+    }
+  };
+
+  if (isLoading) {
     return <Loading />;
+  }
+
+  if (error) {
+    navigate("/login");
+    return null;
   }
 
   return (
     <>
       <div className="mt-0 w-full">
         <Navbar />
-        <Toaster richColors expand={true} position="top-right" />
+        <Toaster closeButton richColors expand={true} position="top-right" />
         <div className="pt-[4rem]">
           {workouts && (
             <>
@@ -89,7 +108,7 @@ const Workouts = () => {
             </>
           )}
         </div>
-        <FormInput space={space} setSpace={setSpace} />
+        <FormInput space={space} setSpace={setSpace} handleAddWorkout={handleAddWorkout} />
       </div>
     </>
   );

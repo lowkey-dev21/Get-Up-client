@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Cookie from "js-cookie";
-import axios from "../services/api.js";
 import { toast } from "sonner";
+import { mutate } from "swr";
+import axios from "../services/api.js";
 
 // eslint-disable-next-line react/prop-types
 const FormInput = ({ space, setSpace }) => {
@@ -10,10 +11,7 @@ const FormInput = ({ space, setSpace }) => {
   const [days, setDays] = useState("");
   const [reps, setReps] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const workout = { exercise, days, reps };
+  const handleAddWorkout = async (workout) => {
     const token = Cookie.get("token");
     try {
       await axios.post("/api/workouts", workout, {
@@ -21,14 +19,23 @@ const FormInput = ({ space, setSpace }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setExercise("");
-      setDays("");
-      setReps("");
-      setSpace(false);
+      mutate("/api/workouts"); // Revalidate the SWR cache
       toast.success("Workout added successfully!");
     } catch (error) {
       console.error("Error submitting workout:", error);
+      toast.error("Failed to add workout. Please try again later.");
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const workout = { exercise, days, reps };
+    await handleAddWorkout(workout);
+    setExercise("");
+    setDays("");
+    setReps("");
+    setSpace(false);
   };
 
   const handleClose = () => {
@@ -89,7 +96,6 @@ const FormInput = ({ space, setSpace }) => {
           />
 
           <button
-            onClick={handleSubmit}
             type="submit"
             className={`h-[50px] z-[300] w-[50px] bg-green-500 items-center justify-center rounded-full fixed bottom-[40px] right-[20px]`}
           >

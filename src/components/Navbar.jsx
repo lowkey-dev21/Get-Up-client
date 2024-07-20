@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import Cookie from "js-cookie"
+import { useNavigate} from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const Navbar = ({ username }) => {
+  const navigate = useNavigate()
+  const logout = ()=>{
+    Cookie.remove("token");
+   navigate("/login")
+  }
   return (
     <>
       <section className=" fixed  w-full flex justify-between px-3 h-[60px] items-center   backdrop-blur-lg ">
@@ -11,9 +17,9 @@ const Navbar = ({ username }) => {
 
         <div>
           <p>{username}</p>
-          <Link to={"signUp"}>
+          <div onClick={logout} to={"signUp"}>
             <img className=" h-[35px] w-[35px] bg-slate-900 rounded-full " />
-          </Link>
+          </div>
         </div>
       </section>
     </>

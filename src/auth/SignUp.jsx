@@ -65,6 +65,10 @@ const SignUp = () => {
       <section className="w-full h-full items-center fixed flex justify-center">
         <div className="w-[90%] gap-3 py-6 flex flex-col justify-center items-center rounded-xl shadow-xl bg-white">
           <Toaster richColors expand={true} position="top-right" />
+          <p className=" text-4xl mb-3  font-semibold  ">
+            {" "}
+            Get <span className=" text-green-500 ">Up</span>{" "}
+          </p>
           <form
             onSubmit={handleSubmit}
             className="w-full flex flex-col p-4 justify-center"

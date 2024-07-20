@@ -5,6 +5,7 @@ import axios from "../services/api";
 import { Toaster, toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import LoadBtn from "../components/LoadBtn.jsx";
+import workout from "../assets/workout.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -38,9 +39,11 @@ const Login = () => {
 
   return (
     <>
-      <section className=" w-full  h-full items-center fixed   flex justify-center ">
+      <section className=" w-full h-full items-center fixed flex-col  mt-[3rem]    flex ">
+        <Toaster richColors expand={true} position="top-right" />
+        <p className=" text-2xl  font-semibold  "  > Get <span className=" text-green-500 " >Up</span> </p>
+        <img src={workout} className=" max-w-[73%]" alt="" />
         <div className=" w-[90%] gap-3  py-6  flex flex-col justify-center items-center rounded-xl shadow-xl bg-white ">
-          <Toaster richColors expand={true} position="top-right" />
           <form
             onSubmit={handleSubmit}
             className=" w-full flex flex-col p-4  justify-center  "
@@ -73,12 +76,12 @@ const Login = () => {
               <div className={` ${load ? "flex" : "hidden"} `}>
                 <LoadBtn />
               </div>
-              <span className={`${load ? " hidden" : "flex"}`} >Login</span>
+              <span className={`${load ? " hidden" : "flex"}`}>Login</span>
             </button>
           </form>
 
           <p>
-            <span>Don`t have account?</span>
+            <span>Don`t have account? </span>
             <Link to={"/signUp"} className=" text-green-500 ">
               Register
             </Link>

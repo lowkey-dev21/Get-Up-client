@@ -9,31 +9,32 @@ import { useNavigate } from "react-router-dom";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [redFlag, setRedFlag] = useState(true);
   const [redFlag2, setRedFlag2] = useState(true);
   const [redFlag3, setRedFlag3] = useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const user = { email, password };
+    const user = { email, password, username };
 
     try {
-      const res = await axios.post(
-        "/api/auth/signUp",
-        user
-      );
+      const res = await axios.post("/api/auth/signUp", user);
       const token = res.data.token;
+      const username = res.data.username;
       Cookie.set("token", token);
+      Cookie.set("username", username);
 
       setEmail("");
       setPassword("");
       setConfirmPassword("");
+      setUsername("");
       toast.success("Sign up successful");
       setTimeout(() => {
-        navigate("/login")
+        navigate("/login");
       }, 5000);
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
@@ -69,6 +70,24 @@ const SignUp = () => {
             className="w-full flex flex-col p-4 justify-center"
           >
             <label className="w-full text-2xl text-center">Sign Up</label>
+
+            <input
+              type="text"
+              value={username}
+              placeholder="Full Name "
+              onChange={(e) => setUsername(e.target.value)}
+              className={`${
+                redFlag2 ? "focus:border-red-500" : "focus:border-green-500"
+              } w-full outline-none border-[1px] p-3 mt-5 rounded-lg text-xl`}
+            />
+
+            {/* <p
+              className={`${
+                redFlag2 ? "flex " : "hidden"
+              }  text-red-500 text-xs `}
+            >
+              Invalid Email
+            </p> */}
 
             <input
               type="text"

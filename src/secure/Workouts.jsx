@@ -20,6 +20,7 @@ const fetchWorkouts = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return res.data.workouts;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -34,6 +35,7 @@ const fetchWorkouts = async () => {
 const Workouts = () => {
   const navigate = useNavigate();
   const [space, setSpace] = useState(false);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const token = Cookie.get("token");
@@ -41,6 +43,31 @@ const Workouts = () => {
       navigate("/login");
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const token = Cookie.get("token"); // Correct token retrieval
+        if (!token) {
+          throw new Error("No token found");
+        }
+        const res = await axios.get("/api/auth", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUsername(res.data.username);
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("Failed to fetch username. Please try again later.");
+        }
+      }
+    };
+    fetchUsername();
+  }, []);
 
   const { data: workouts, error, isLoading } = useSWR("/api/workouts", fetchWorkouts);
 
@@ -79,7 +106,7 @@ const Workouts = () => {
   return (
     <>
       <div className="mt-0 w-full">
-        <Navbar />
+        <Navbar username={username} />
         <Toaster closeButton richColors expand={true} position="top-right" />
         <div className="pt-[4rem]">
           {workouts && (
@@ -108,7 +135,11 @@ const Workouts = () => {
             </>
           )}
         </div>
-        <FormInput space={space} setSpace={setSpace} handleAddWorkout={handleAddWorkout} />
+        <FormInput
+          space={space}
+          setSpace={setSpace}
+          handleAddWorkout={handleAddWorkout}
+        />
       </div>
     </>
   );

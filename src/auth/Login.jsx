@@ -49,7 +49,7 @@ const Login = () => {
             className=" w-full flex flex-col p-4  justify-center  "
           >
          
-        <label className=" text-2xl"  > Login </label>
+        <label className=" text-2xl text-center "  > Login </label>
 
             <input
               type="text"

@@ -48,7 +48,7 @@ const Login = () => {
             onSubmit={handleSubmit}
             className=" w-full flex flex-col p-4  justify-center  "
           >
-            <label className=" w-full  text-2xl text-center ">Login</label>
+         
 
             <input
               type="text"

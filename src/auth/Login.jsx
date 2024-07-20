@@ -46,7 +46,7 @@ const Login = () => {
         <div className=" w-[90%] gap-3  py-6  flex flex-col justify-center items-center rounded-xl shadow-xl bg-white ">
           <form
             onSubmit={handleSubmit}
-            className=" w-full flex flex-col p-4  justify-center  "
+            className=" w-full flex flex-col p-4 items-center justify-center  "
           >
          
         <label className=" text-2xl text-center "  > Login </label>

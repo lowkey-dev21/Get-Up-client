@@ -21,9 +21,9 @@ const Login = () => {
       const token = res.data.token;
       Cookie.set("token", token);
       setLoad(true);
-      setTimeout(() => {
+      
         navigate("/");
-      }, 5000);
+    
     } catch (error) {
       if (
         error.response &&

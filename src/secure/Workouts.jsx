@@ -47,19 +47,17 @@ const Workouts = () => {
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        const token = Cookie.get("token"); // Correct token retrieval
-        if (!token) {
-          throw new Error("No token found");
-        }
-        const res = await axios.get("/api/auth", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const usernameToken = Cookie.get("username"); // Correct token retrieval
+        const username = usernameToken.username;
 
-        setUsername(res.data.username);
+        setUsername(username);
+        console.log(username)
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.message) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
           toast.error(error.response.data.message);
         } else {
           toast.error("Failed to fetch username. Please try again later.");
@@ -69,7 +67,11 @@ const Workouts = () => {
     fetchUsername();
   }, []);
 
-  const { data: workouts, error, isLoading } = useSWR("/api/workouts", fetchWorkouts);
+  const {
+    data: workouts,
+    error,
+    isLoading,
+  } = useSWR("/api/workouts", fetchWorkouts);
 
   const handleAddWorkout = async (newWorkout) => {
     try {
@@ -86,7 +88,11 @@ const Workouts = () => {
       // Invalidate and refetch
       mutate("/api/workouts");
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(error.response.data.message);
       } else {
         toast.error("Failed to add workout. Please try again later.");

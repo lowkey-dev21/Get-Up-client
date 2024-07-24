@@ -18,7 +18,7 @@ const Navbar = ({ username }) => {
         <div>
           <p>{username}</p>
           <div onClick={logout} to={"signUp"}>
-            <img className=" h-[35px] w-[35px] bg-slate-900 rounded-full " />
+           Logout 
           </div>
         </div>
       </section>

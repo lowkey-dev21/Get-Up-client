@@ -21,9 +21,9 @@ const Login = () => {
       const token = res.data.token;
       Cookie.set("token", token);
       setLoad(true);
-      setTimeout(() => {
+      
         navigate("/");
-      }, 5000);
+    
     } catch (error) {
       if (
         error.response &&
@@ -41,14 +41,15 @@ const Login = () => {
     <>
       <section className=" w-full h-full items-center fixed flex-col  mt-[3rem]    flex ">
         <Toaster richColors expand={true} position="top-right" />
-        <p className=" text-2xl  font-semibold  "  > Get <span className=" text-green-500 " >Up</span> </p>
+        <p className=" text-3xl  font-semibold  "  > Get <span className=" text-green-500 " >Up</span> </p>
         <img src={workout} className=" max-w-[73%]" alt="" />
         <div className=" w-[90%] gap-3  py-6  flex flex-col justify-center items-center rounded-xl shadow-xl bg-white ">
           <form
             onSubmit={handleSubmit}
-            className=" w-full flex flex-col p-4  justify-center  "
+            className=" w-full flex flex-col p-4 items-center justify-center  "
           >
-            <label className=" w-full  text-2xl text-center ">Login</label>
+         
+        <label className=" text-2xl text-center "  > Login </label>
 
             <input
               type="text"
